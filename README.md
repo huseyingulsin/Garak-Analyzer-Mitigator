@@ -1,99 +1,79 @@
-# 🧪 Garak Analyzer & Mitigator
+# 🔬 Garak Analyzer & Mitigator
 
-**Garak Analyzer & Mitigator** is a web-based tool designed to analyze and enhance the safety of outputs from [Garak](https://github.com/leondz/garak), an adversarial testing framework for Large Language Models (LLMs). It provides a user-friendly interface to inspect `*.report.jsonl` files, visualize vulnerabilities, and suggest prompt-level mitigations using LLMs like OpenAI, Gemini, or local models.
-
----
-
-## 🚀 Features
-
-- 📄 **Upload** `.report.jsonl` files from Garak
-- 📊 **Visualize** prompts, outputs, and trigger detection results
-- 🛡️ **Mitigate** risks with automatic system prompt suggestions via LLMs
-- 📥 **Export** cleaned and reviewed data to PDF for documentation
+A lightweight web interface to upload, visualize, and mitigate adversarial prompt test results from [Garak](https://github.com/leondz/garak), a tool for red-teaming language models. This viewer allows you to inspect `.report.jsonl` output files, view statistics, analyze triggers, and generate system prompt mitigations using local or cloud LLMs (e.g., OpenAI, Gemini, Ollama).
 
 ---
 
-## 📷 Interface Preview
+## ✨ Features
 
-![Architecture Diagram](static/garak_architecture.png)
-
----
-
-## 🛠️ Installation
-
-1. **Clone the repository**  
-   ```bash
-   git clone https://github.com/yourusername/garak-analyzer.git
-   cd garak-analyzer
-   ```
-
-2. **Create a virtual environment**
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
-
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Run the app**
-   ```bash
-   flask run
-   ```
+- 📄 Upload `.report.jsonl` files from Garak
+- 📊 View pass/fail attempts, probe statistics, and trigger matches
+- 🛡️ Generate system prompt mitigations using LLMs
+- 📥 Export annotated report to PDF
+- 🔎 Live search & filtering
+- 🖼️ Visual pipeline diagram
 
 ---
 
-## 🌐 Usage
+## 🚀 Getting Started
 
-1. Launch the web interface via `http://127.0.0.1:5000`
-2. Upload your Garak `.report.jsonl` file
-3. Analyze test attempts, success rates, and triggers
-4. Optionally, generate mitigation prompts
-5. Export results to PDF
+### 1. Clone the Repo
+
+```bash
+git clone https://github.com/huseyingulsin/Garak-Analyzer-Mitigator.git
+cd Garak-Analyzer-Mitigator
+```
+
+### 2. Create a Virtual Environment
+
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Run the App
+
+```bash
+python app.py
+```
+
+Then open [http://localhost:5000](http://localhost:5000) in your browser.
 
 ---
 
-## 📦 Directory Structure
+## 📂 Project Structure
 
 ```
-garak-analyzer/
-│
-├── app.py                  # Main Flask app
-├── templates/              # HTML templates (Jinja2)
-│   └── index.html
-├── static/                 # Static files (CSS, JS, PNGs)
-│   └── garak_architecture.png
-├── sample.report.jsonl     # Example file
-└── requirements.txt        # Python dependencies
+├── app.py                     # Flask app entrypoint
+├── templates/
+│   └── index.html             # Main UI template
+├── static/
+│   ├── style.css              # Optional styling
+│   ├── script.js              # JS for modals and frontend logic
+│   └── sample.report.jsonl    # Example file
+├── requirements.txt           # Dependencies
+├── README.md
+└── .gitattributes             # GitHub language stats cleanup
 ```
 
 ---
 
-## 🤖 Supported LLM Providers
+## 🧪 Example File
 
-- **OpenAI** (e.g., GPT-4)
-- **Gemini** (Google Cloud)
-- **Ollama** (Local models)
+A sample Garak report is included for demo purposes:
 
-> Provider can be selected from the dropdown before generating mitigations.
+📄 `static/sample.report.jsonl`
 
----
-
-## 📄 Sample Report
-
-Use the bundled [`sample.report.jsonl`](static/sample.report.jsonl) to explore the interface without generating your own Garak report.
+Try uploading it via the web UI to see the viewer in action!
 
 ---
 
-## ✍️ License
+## 📜 License
 
-MIT License © 2025 — [Your Name](https://github.com/huseyingulsin)
-
----
-
-## 🙏 Acknowledgments
-
-- [Garak](https://github.com/leondz/garak) – for the test report framework
-- [OpenAI](https://openai.com), [Google](https://ai.google), [Ollama](https://ollama.ai) – for LLMs
+MIT License © Hüseyin Gülsin
