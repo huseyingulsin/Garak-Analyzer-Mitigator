@@ -201,12 +201,14 @@ button:hover {
     border-radius: 5px;
     padding: 0.4rem 0.8rem;
     font-size: 0.95rem;
+    color: black; /* 👈 Add this line */
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
     transition: background-color 0.2s;
 }
+
 
 .btn-icon:hover {
     background-color: #e0e0e0;
