@@ -47,6 +47,40 @@ Then open [http://localhost:5000](http://localhost:5000) in your browser.
 
 ---
 
+## 🛡️ Local Mitigation with Ollama
+
+To use the **local mitigation option with Ollama**, follow these steps:
+
+### 1. Install Ollama
+
+Go to [https://ollama.com](https://ollama.com) and install Ollama for your OS.
+
+### 2. Pull a Supported Model
+
+Run one of the following in your terminal:
+
+```bash
+ollama pull llama3
+# or
+ollama pull mistral
+```
+
+> Make sure you have sufficient disk space and RAM available.
+
+### 3. Run Ollama in the Background
+
+```bash
+ollama run llama3
+```
+
+This will start a local model server at `http://localhost:11434`.
+
+### 4. Select "Ollama (Local)" in the Viewer UI
+
+Use the dropdown in the web UI to select **“Ollama (Local)”** as your LLM provider. When you click "🛡️ Generate", it will query your local model.
+
+---
+
 ## 📂 Project Structure
 
 ```
