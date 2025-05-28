@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Garak CLI Cheatsheet{% endblock %}
+
+{% block content %}
+<h2>📜 Common Garak Commands</h2>
+
+<p>Use these commands to run probes, test model behaviors, or evaluate robustness. You can combine models, probes, detectors, and more!</p>
+
+<h3>🚀 Basic Commands</h3>
+<ul>
+    <li><code>garak run</code> — Runs the default configuration</li>
+    <li><code>garak run -m openai:gpt-3.5-turbo</code> — Use a specific model</li>
+    <li><code>garak run -m ollama:llama3 -p promptinject</code> — Test a local Ollama model</li>
+</ul>
+
+<h3>🧪 Probe & Generation Control</h3>
+<ul>
+    <li><code>garak run -p promptinject</code> — Run Prompt Injection probe</li>
+    <li><code>garak run -p jailbreak -g 20</code> — Run 20 generations with the jailbreak probe</li>
+    <li><code>garak run -p regex,grammar</code> — Run multiple probes</li>
+    <li><code>garak list probes</code> — List all available probes</li>
+</ul>
+
+<h3>🧠 Model Types</h3>
+<ul>
+    <li><code>-m openai:gpt-4</code> — OpenAI API model</li>
+    <li><code>-m huggingface:tiiuae/falcon-7b</code> — Hugging Face model</li>
+    <li><code>-m ollama:gemma</code> — Local model via Ollama</li>
+</ul>
+
+<h3>🔍 Detectors</h3>
+<ul>
+    <li><code>-d auto</code> — Use automatic detector (recommended)</li>
+    <li><code>garak list detectors</code> — View all detectors</li>
+</ul>
+
+<h3>📝 Output & Reporting</h3>
+<ul>
+    <li><code>--report jsonl</code> — Save results in JSONL format</li>
+    <li><code>--report html</code> — Generate HTML report</li>
+    <li><code>--report_dir results/</code> — Save reports in a custom folder</li>
+</ul>
+
+<h3>⚙️ Advanced</h3>
+<ul>
+    <li><code>--generations 50</code> — Set number of generations</li>
+    <li><code>--interactive</code> — Step through attempts manually</li>
+    <li><code>--deprefix</code> — Strip prefixes before scoring</li>
+</ul>
+
+<h3>❓ Help</h3>
+<ul>
+    <li><code>garak --help</code> — See full help and options</li>
+    <li><code>garak run --help</code> — Detailed options for `run`</li>
+</ul>
+
+<p><em>Pro tip:</em> Combine everything for full control:</p>
+<pre><code>
+garak run -m openai:gpt-4 -p promptinject,jailbreak -d auto -g 10 --report jsonl
+</code></pre>
+
+{% endblock %}

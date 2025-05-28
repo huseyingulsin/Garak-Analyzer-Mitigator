@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Garak PDF Report</title>
+<style>
+    body { font-family: sans-serif; font-size: 12px; padding: 2rem; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 2rem; }
+    th, td { border: 1px solid #ccc; padding: 6px; vertical-align: top; }
+    h2 { margin-top: 2rem; }
+    pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-size: 10px;
+        max-height: 300px;
+        overflow: hidden;
+    }
+</style>
+
+</head>
+<body>
+    <h1>Garak Run Report ({{ summary.run_id }})</h1>
+    <p><strong>Model:</strong> {{ summary.model }}</p>
+    <p><strong>Probe Spec:</strong> {{ summary.probe_spec }}</p>
+    <p><strong>Detector:</strong> {{ summary.detector_spec }}</p>
+    <p><strong>Toplam Attempt:</strong> {{ summary.total }} |
+       ✅ Başarılı: {{ summary.success }} |
+       ❌ Başarısız: {{ summary.fail }}</p>
+
+    <h2>Probe Başarıları</h2>
+    <table>
+        <tr><th>Probe</th><th>Passed</th><th>Total</th><th>%</th></tr>
+        {% for e in evals %}
+        <tr>
+            <td>{{ e.probe }}</td>
+            <td>{{ e.passed }}</td>
+            <td>{{ e.total }}</td>
+            <td>{{ e.rate }}%</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Attempt Detayları</h2>
+    <table>
+        <tr><th>ID</th><th>Probe</th><th>Trigger</th><th>Durum</th><th>Output</th></tr>
+        {% for a in data %}
+        <tr>
+            <td>{{ a.uuid }}</td>
+            <td>{{ a.probe }}</td>
+            <td>{% if a.has_trigger %}Evet{% else %}Hayır{% endif %}</td>
+            <td>{{ a.status }}</td>
+         <td>
+  <ul>
+    {% for out in a.outputs %}
+      <li><pre>{{ out }}</pre></li>
+    {% endfor %}
+  </ul>
+</td>
+           </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

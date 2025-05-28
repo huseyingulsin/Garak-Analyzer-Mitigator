@@ -1,0 +1,8 @@
+Flask
+flask-cors
+Werkzeug
+reportlab
+requests
+tqdm
+python-dotenv
+gunicorn

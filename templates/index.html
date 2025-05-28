@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+
+{% block title %}Garak Analyzer & Mitigator{% endblock %}
+
+{% block content %}
+<h2 style="text-align: center;">🧪 Garak Analyzer & Mitigator</h2>
+
+{% if 'total' not in summary or summary['total'] == 0 %}
+<section style="text-align: center; max-width: 700px; margin: 2rem auto;">
+    <p>Welcome to the <strong>Garak Analyzer & Mitigator</strong> – a powerful tool to inspect <code>.jsonl</code> reports from <code>garak</code>, visualize scan attempts, and generate LLM mitigation prompts to enhance safety.</p>
+
+    <div class="features" style="margin: 2rem auto;">
+        <ul style="text-align:left; display:inline-block;">
+            <li>📄 Upload your <code>.report.jsonl</code> file from Garak</li>
+            <li>📊 Visualize prompts, responses, and trigger detection</li>
+            <li>🛡️ Generate system prompt mitigations using local or cloud LLMs</li>
+            <li>📥 Export clean reports to PDF for documentation or sharing</li>
+        </ul>
+    </div>
+
+    <div style="margin: 1rem auto;">
+        <p><strong>Need an example?</strong> <a href="{{ url_for('static', filename='sample.report.jsonl') }}" download>Download sample report</a></p>
+    </div>
+
+    <div class="upload-cta" style="margin: 2rem auto; padding: 1.5rem; background: #eef; display:inline-block; border-radius: 12px; box-shadow: 0 0 12px rgba(0,0,0,0.05);">
+        <form id="reportForm" class="upload-form" method="post" enctype="multipart/form-data">
+            <label class="custom-file-input">
+                <span class="file-label">📁 Choose report file (.jsonl)</span>
+                <input id="reportFile" type="file" name="file" accept=".jsonl" required>
+            </label>
+            <div style="margin-top: 1rem;">
+                <button type="submit" formaction="/upload">📊 View Results</button>
+                <button type="submit" formaction="/download_pdf">📄 Download as PDF</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Architecture Diagram Section -->
+    <div class="diagram-container">
+      <h3>🧭 Architecture</h3>
+      <p>This is how data flows through the Garak Analyzer & Mitigator:</p>
+      <img src="{{ url_for('static', filename='garak_architecture.png') }}" alt="Garak Architecture Diagram" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 0 12px rgba(0,0,0,0.1);">
+    </div>
+</section>
+{% endif %}
+
+{% if 'total' in summary and summary['total'] > 0 %}
+<!-- Summary Section -->
+<div class="stats-box">
+    <p><strong>Model:</strong> {{ summary['model'] }}</p>
+    <p><strong>Run ID:</strong> {{ summary['run_id'] }}</p>
+    <p><strong>Total Attempts:</strong> {{ summary['total'] }}</p>
+    <p><strong>✅ Success:</strong> {{ summary['success'] }} |
+       <strong>❌ Failed:</strong> {{ summary['fail'] }}</p>
+    <p><strong>Probe Spec:</strong> {{ summary['probe_spec'] }} |
+       <strong>Detector:</strong> {{ summary['detector_spec'] }}</p>
+</div>
+
+<!-- Upload Form -->
+<form id="reportForm" class="upload-form" method="post" enctype="multipart/form-data" style="margin-bottom: 2rem;">
+    <label class="custom-file-input">
+        <span class="file-label">📁 Choose new report file</span>
+        <input id="reportFile" type="file" name="file" accept=".jsonl" required>
+    </label>
+    <button type="submit" formaction="/upload">📊 View Results</button>
+    <button type="submit" formaction="/download_pdf">📄 Download as PDF</button>
+</form>
+
+<!-- Evaluation -->
+{% if evals %}
+<h3>📊 Probe Success Rates</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Probe</th>
+            <th>Passed</th>
+            <th>Total</th>
+            <th>Success %</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for row in evals %}
+        <tr>
+            <td>{{ row.probe }}</td>
+            <td>{{ row.passed }}</td>
+            <td>{{ row.total }}</td>
+            <td>{{ row.rate }}%</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<!-- Attempts -->
+<h3>🧾 Attempt Details</h3>
+
+<div style="margin-bottom: 1rem; text-align: right;">
+    <label for="providerSelect"><strong>LLM Provider for Preventions:</strong></label>
+    <select id="providerSelect" style="padding: 0.3rem 0.5rem;">
+        <option value="ollama">Ollama (Local)</option>
+        <option value="openai">OpenAI</option>
+        <option value="gemini">Gemini</option>
+    </select>
+</div>
+
+<input class="search-bar" type="text" id="searchInput" placeholder="Search in outputs..." onkeyup="filterTable()">
+
+<div style="overflow-x:auto;">
+    <table id="attemptTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Probe</th>
+                <th>Trigger</th>
+                <th>Status</th>
+                <th>Prevention</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for row in data %}
+            <tr>
+                <td>{{ row.uuid }}</td>
+                <td>{{ row.probe }}</td>
+                <td>
+                    {% if row.has_trigger %}
+                        <span class="trigger">Trigger matched</span>
+                    {% elif row.trigger %}
+                        <small>(trigger expected)</small>
+                    {% else %}
+                        <small>N/A</small>
+                    {% endif %}
+                </td>
+                <td class="{{ 'success' if row.status == 'Success' else 'fail' }}">{{ row.status }}</td>
+                <td>
+                    <button class="btn-icon" type="button" onclick="generatePrevention({{ loop.index0 }})">🛡️ Generate</button>
+                    <div class="modal" id="prevent-modal-{{ loop.index0 }}">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeModal('prevent-modal-{{ loop.index0 }}')">&times;</span>
+                            <h3>🛡️ Prevention Suggestion</h3>
+                            <div id="generated-prevention-{{ loop.index0 }}">
+                                <em><span class="spinner"></span> Generating suggestion...</em>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <button class="btn-icon" type="button" onclick="openModal('details-modal-{{ loop.index0 }}')">🤖 Show</button>
+                    <div class="modal" id="details-modal-{{ loop.index0 }}">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeModal('details-modal-{{ loop.index0 }}')">&times;</span>
+                            <h3>Details for Attempt {{ row.uuid }}</h3>
+                            <strong>Prompt:</strong>
+                            <pre>{{ row.prompt | e }}</pre>
+                            <strong>Outputs:</strong>
+                            <ul>
+                                {% for o in row.outputs %}
+                                <li><pre>{{ o | e }}</pre></li>
+                                {% endfor %}
+                            </ul>
+                            {% if row.trigger %}
+                            <strong>Trigger:</strong> <code>{{ row.trigger }}</code><br>
+                            <strong>Matched?:</strong> {{ "Yes ✅" if row.has_trigger else "No ❌" }}
+                            {% endif %}
+                            {% if row.prevention %}
+                            <hr>
+                            <h4>🛡️ Suggested Prevention</h4>
+                            <p>{{ row.prevention }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+{% endblock %}

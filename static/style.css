@@ -1,0 +1,259 @@
+/* Global styles */
+body {
+    font-family: sans-serif;
+    margin: 0;
+    background-color: #f8f8f8;
+}
+
+/* Layout containers */
+main {
+    padding: 2rem;
+    background: #fff;
+    min-height: 80vh;
+}
+
+/* Header and Footer */
+header {
+    background: #20232a;
+    color: #fff;
+    padding: 1rem 2rem;
+}
+header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+nav {
+    margin-top: 0.5rem;
+}
+nav a {
+    margin-right: 1rem;
+    color: #61dafb;
+    text-decoration: none;
+}
+nav a:hover {
+    text-decoration: underline;
+}
+footer {
+    text-align: center;
+    padding: 1rem;
+    background: #eee;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* File input */
+.upload-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+.custom-file-input {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+.custom-file-input input[type="file"] {
+    position: absolute;
+    font-size: 100px;
+    opacity: 0;
+    right: 0;
+    top: 0;
+}
+.file-label {
+    display: inline-block;
+    background: #eee;
+    border: 1px solid #ccc;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Tables */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 2rem;
+}
+th, td {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+.success {
+    color: green;
+    font-weight: bold;
+}
+.fail {
+    color: red;
+    font-weight: bold;
+}
+.trigger {
+    color: red;
+    background: #ffe0e0;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+}
+
+/* Details toggle */
+.details {
+    display: none;
+    background: #f9f9f9;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    margin-top: 0.5rem;
+    overflow-x: auto;
+    max-width: 100%;
+    white-space: pre-wrap;
+}
+
+/* Output text areas */
+pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-x: auto;
+}
+
+/* Buttons */
+button {
+    background: #444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+button:hover {
+    background: #222;
+}
+.btn-toggle {
+    background: none;
+    color: blue;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 0.95rem;
+}
+
+/* Search bar */
+.search-bar {
+    padding: 0.5rem;
+    width: 100%;
+    max-width: 400px;
+    margin: 1rem auto;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+@media (max-width: 600px) {
+    .upload-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-bar {
+        width: 100%;
+    }
+}
+
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    padding-top: 60px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    background-color: rgba(0,0,0,0.6);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: auto;
+    padding: 2rem;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 800px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.close:hover {
+    color: black;
+}
+
+.btn-icon {
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: background-color 0.2s;
+}
+
+.btn-icon:hover {
+    background-color: #e0e0e0;
+}
+ #attemptTable tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+    pre {
+        padding: 0.5rem;
+        background: #f3f3f3;
+        border-radius: 4px;
+        overflow-x: auto;
+    }
+    .spinner {
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        border: 2px solid rgba(0,0,0,.3);
+        border-top-color: black;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    /* Table and pre styling */
+    #attemptTable tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+    pre {
+        padding: 0.5rem;
+        background: #f3f3f3;
+        border-radius: 4px;
+        overflow-x: auto;
+    }
+
+    /* Spinner for loading */
+    .spinner {
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        border: 2px solid rgba(0,0,0,.3);
+        border-top-color: black;
+        border-radius: 50%;
+        animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }

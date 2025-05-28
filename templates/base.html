@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Garak Viewer{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>🧪 Garak Toolkit</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">🏠 Home</a>
+            <a href="{{ url_for('index') }}">📊 Report Viewer</a>
+            <a href="{{ url_for('garak_cheatsheet') }}">📜 Garak CLI</a>
+            <a href="{{ url_for('ollama_guide') }}">🤖 Local Model</a>
+        </nav>
+
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        Created by <strong>Hüseyin Gülsin</strong> |
+        <a href="https://github.com/huseyingulsin" target="_blank">GitHub</a> •
+        <a href="http://linkedin.com/huseyingulsin" target="_blank">LinkedIn</a>
+    </footer>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>

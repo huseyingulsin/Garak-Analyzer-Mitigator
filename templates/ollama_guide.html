@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Run Garak with Local LLMs (Ollama){% endblock %}
+
+{% block content %}
+<h2>🤖 Run Garak on Local LLMs via <a href="https://ollama.com" target="_blank">Ollama</a></h2>
+
+<p>Garak can be used to test models running locally on your machine through <strong>Ollama</strong>. This is perfect for privacy, speed, or experimenting with open-source models.</p>
+
+<hr>
+
+<h3>🧱 Step-by-Step Setup</h3>
+<ol>
+    <li>
+        <strong>Install Ollama</strong><br>
+        Mac:
+        <pre><code>brew install ollama</code></pre>
+        Or visit: <a href="https://ollama.com/download" target="_blank">ollama.com/download</a>
+    </li>
+    <li>
+        <strong>Pull a model</strong> (e.g., Gemma or LLaMA3)
+        <pre><code>ollama pull gemma</code>
+<code>ollama pull llama3</code></pre>
+    </li>
+    <li>
+        <strong>Start the model</strong> (optional, Garak can auto-trigger)
+        <pre><code>ollama run gemma</code></pre>
+    </li>
+    <li>
+        <strong>Run Garak with Ollama</strong>
+        <pre><code>garak run -m ollama:gemma -p promptinject -g 5 --report jsonl</code></pre>
+    </li>
+</ol>
+
+<hr>
+
+<h3>🛠 Example Models You Can Use</h3>
+<ul>
+    <li><code>ollama:gemma</code> — lightweight & fast</li>
+    <li><code>ollama:llama3</code> — powerful open model</li>
+    <li><code>ollama:phi3</code> — small & efficient</li>
+</ul>
+
+<p>To list all models:</p>
+<pre><code>ollama list</code></pre>
+
+<hr>
+
+<h3>📍 Default Ollama Settings</h3>
+<ul>
+    <li><strong>Base URL:</strong> <code>http://localhost:11434</code></li>
+    <li><strong>Models are streamed locally (no internet required)</strong></li>
+</ul>
+
+<hr>
+
+<h3>🧪 Full Command Example</h3>
+<pre><code>
+garak run -m ollama:llama3 -p promptinject,jailbreak \
+    -g 10 --report jsonl --report_dir reports/
+</code></pre>
+
+<hr>
+
+<h3>🧠 Tips</h3>
+<ul>
+    <li>Use <code>-d auto</code> for automatic detection scoring</li>
+    <li>Ollama must be running in the background for Garak to connect</li>
+    <li>Use <code>--lite</code> or <code>--deprefix</code> for lighter runs</li>
+</ul>
+
+<p>Read more at: <a href="https://garak.ai" target="_blank">garak.ai</a> • <a href="https://ollama.com" target="_blank">ollama.com</a></p>
+{% endblock %}

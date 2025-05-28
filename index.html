@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>🧪 Garak JSONL Viewer (Modal)</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background-color: #f9f9f9;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 1rem;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      vertical-align: top;
+    }
+    .success { color: green; font-weight: bold; }
+    .fail { color: red; font-weight: bold; }
+    .trigger { background: #ffe0e0; font-weight: bold; padding: 0.2rem 0.5rem; color: red; }
+    .btn-toggle {
+      background: none;
+      border: none;
+      color: blue;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    .stats { margin-top: 1rem; }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      padding-top: 5%;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+      background-color: white;
+      margin: auto;
+      padding: 20px;
+      width: 80%;
+      max-height: 80%;
+      overflow-y: auto;
+      border: 1px solid #888;
+      border-radius: 8px;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    pre { white-space: pre-wrap; word-break: break-word; }
+  </style>
+</head>
+<body>
+
+<h1>🧪 Garak JSONL Viewer</h1>
+<input type="file" id="fileInput" accept=".jsonl" />
+<div id="stats" class="stats"></div>
+
+<table id="resultTable" style="display:none;">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Probe</th>
+      <th>Trigger</th>
+      <th>Durum</th>
+      <th>Detay</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<!-- Modal -->
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+document.getElementById('fileInput').addEventListener('change', async function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const text = await file.text();
+  const lines = text.split('\n').filter(Boolean);
+  const attempts = [];
+  let summary = { total: 0, success: 0, fail: 0 };
+
+  lines.forEach(line => {
+    const entry = JSON.parse(line);
+    if (entry.entry_type === "attempt") {
+      const outputs = entry.outputs || [];
+      const trigger = entry.notes?.settings?.attack_rogue_string || "";
+      const has_trigger = outputs.some(o => o.toLowerCase().includes(trigger.toLowerCase()));
+      const status = entry.status === 1 ? "Success" : "Fail";
+
+      attempts.push({
+        uuid: entry.uuid?.slice(0, 8) || "-",
+        probe: entry.probe_classname || "-",
+        outputs: outputs,
+        prompt: entry.prompt || "",
+        status: status,
+        trigger: trigger,
+        has_trigger: has_trigger
+      });
+
+      summary.total += 1;
+      summary.success += (status === "Success" ? 1 : 0);
+      summary.fail += (status === "Fail" ? 1 : 0);
+    }
+  });
+
+  const table = document.getElementById("resultTable");
+  const tbody = table.querySelector("tbody");
+  tbody.innerHTML = "";
+
+  attempts.forEach((row, i) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${row.uuid}</td>
+      <td>${row.probe}</td>
+      <td>${row.has_trigger ? '<span class="trigger">🎯 Trigger Yakalandı</span>' : row.trigger ? '(trigger aranıyor)' : 'Yok'}</td>
+      <td class="${row.status === 'Success' ? 'success' : 'fail'}">${row.status}</td>
+      <td><button class="btn-toggle" onclick="showModal(${i})">Göster</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById("stats").innerHTML = `
+    📊 Toplam Attempt: ${summary.total} |
+    ✅ Başarılı: ${summary.success} |
+    ❌ Başarısız: ${summary.fail}
+  `;
+
+  table.style.display = "table";
+
+  // Modal veri hazırlığı
+  window.attempts = attempts;
+});
+
+function showModal(i) {
+  const attempt = window.attempts[i];
+const html = `
+  <h2>Detaylar - ${attempt.uuid}</h2>
+  <strong>Prompt:</strong>
+  <pre>${attempt.prompt}</pre>
+  <strong>Outputs:</strong>
+  <ul>${attempt.outputs.map(o => `<li><pre>${o}</pre></li>`).join('')}</ul>
+  ${attempt.trigger ? `<strong>Trigger:</strong> <code>${attempt.trigger}</code><br>` : ''}
+  <strong>Trigger Yakalandı mı?:</strong> ${attempt.has_trigger ? "Evet ✅" : "Hayır ❌"}
+
+  <hr>
+  <button onclick="generateMitigation('${encodeURIComponent(attempt.prompt)}', ${i})">🛡️ Generate Mitigation</button>
+  <div id="mitigation-${i}" style="margin-top:0.5rem;"></div>
+  <button onclick="retestPrompt(${i})" id="retest-${i}" style="display:none;">🔁 Retest with Mitigation</button>
+`;
+
+  document.getElementById("modalContent").innerHTML = html;
+  document.getElementById("myModal").style.display = "block";
+}
+
+function closeModal() {
+  document.getElementById("myModal").style.display = "none";
+}
+</script>
+
+</body>
+</html>
